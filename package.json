@@ -15,6 +15,33 @@
     ],
     "main": "./out/extension",
     "contributes": {
+        "configuration":[
+            {
+                "title": "Cobol Pretty Headers",
+                "properties": {
+                    "cobolprettyheaders.setHighestLevelNumber": {
+                        "type":"string",
+                        "default": "01",
+                        "description": "Enter the highest level number you'd like for header field definitions."
+                    },
+                    "cobolprettyheaders.setLowestLevelNumber": {
+                        "type": "string",
+                        "default": "05",
+                        "description": "Enter the lowest level number you'd like for the sub-fields in the header definition. Note that this must be lower than the highest level number."
+                    },
+                    "cobolprettyheaders.condensedHeaders": {
+                        "type":"boolean",
+                        "default": false,
+                        "description": "Check to change header data fields to condensed, condensed data fields will store each full line of the header in a single data field instead of separate ones for each word and space."
+                    },
+                    "cobolprettyheaders.setPrintOutputField": {
+                        "type":"string",
+                        "default": "output",
+                        "description": "Set the name of the output for the header write procedure, default is set to 'output'"
+                    }
+                }
+            }
+        ],
         "commands": [
             {
                 "command": "extension.generateHeaderCode",
