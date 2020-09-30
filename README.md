@@ -31,7 +31,7 @@ Regular header:
 	05 FILLER	PIC X(1)	VALUE SPACES  
 	05 FILLER	PIC X(2)	VALUE "is"  
   
-01 Cobol!-HDR.  								 
+01 Cobol!-HDR.  
 	05 FILLER	PIC X(6)	VALUE "Cobol!"  
   
   
