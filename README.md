@@ -14,36 +14,36 @@ The user can also select whether or not they would like condensed headers or not
 
 Header:
 
-Hello World
-My Name is
+Hello World  
+My Name is  
 Cobol!
 
-Regular header:														Condensed Header:
+Regular header:														Condensed Header:  
 01 Hello-HDR.														01 Hello-HDR.
-	05 FILLER	PIC X(5)	VALUE "Hello"								05 FILLER	PIC X(11)	VALUE "Hello World"	
-	05 FILLER	PIC X(1)	VALUE SPACES							
-	05 FILLER	PIC X(5)	VALUE "World"							01 My-HDR.
-																		05 FILLER	PIC X(10)	VALUE "My Name is"
-01 My-HDR.															
-	05 FILLER	PIC X(2)	VALUE "My"								01 Cobol!-HDR.
-	05 FILLER	PIC X(1)	VALUE SPACES								05 FILLER	PIC X(6)	VALUE "Cobol!"
-	05 FILLER	PIC X(4)	VALUE "Name"
-	05 FILLER	PIC X(1)	VALUE SPACES
-	05 FILLER	PIC X(2)	VALUE "is"
-																	write-hdrs.
-01 Cobol!-HDR.														WRITE 'PRINT-REC' FROM Hello-HDR
-	05 FILLER	PIC X(6)	VALUE "Cobol!"								AFTER ADVANCING PAGE
-																	WRITE 'PRINT-REC' FROM My-HDR
-																		AFTER ADVANCING 1 LINE
-																	WRITE 'PRINT-REC' FROM Cobol!-HDR
-																		AFTER ADVANCING 1 LINE
-write-hdrs.
-WRITE 'PRINT-REC' FROM Hello-HDR
-	 AFTER ADVANCING PAGE
-WRITE 'PRINT-REC' FROM My-HDR
-	 AFTER ADVANCING 1 LINE
-WRITE 'PRINT-REC' FROM Cobol!-HDR
-	 AFTER ADVANCING 1 LINE
+	05 FILLER	PIC X(5)	VALUE "Hello"								05 FILLER	PIC X(11)	VALUE "Hello World"  	
+	05 FILLER	PIC X(1)	VALUE SPACES  							
+	05 FILLER	PIC X(5)	VALUE "World"							01 My-HDR.  
+																		05 FILLER	PIC X(10)	VALUE "My Name is"  
+01 My-HDR.  															
+	05 FILLER	PIC X(2)	VALUE "My"								01 Cobol!-HDR.  
+	05 FILLER	PIC X(1)	VALUE SPACES								05 FILLER	PIC X(6)	VALUE "Cobol!"  
+	05 FILLER	PIC X(4)	VALUE "Name"  
+	05 FILLER	PIC X(1)	VALUE SPACES  
+	05 FILLER	PIC X(2)	VALUE "is"  
+																	write-hdrs.  
+01 Cobol!-HDR.														WRITE 'PRINT-REC' FROM Hello-HDR  
+	05 FILLER	PIC X(6)	VALUE "Cobol!"								AFTER ADVANCING PAGE  
+																	WRITE 'PRINT-REC' FROM My-HDR  
+																		AFTER ADVANCING 1 LINE  
+																	WRITE 'PRINT-REC' FROM Cobol!-HDR  
+																		AFTER ADVANCING 1 LINE  
+write-hdrs.  
+WRITE 'PRINT-REC' FROM Hello-HDR  
+	 AFTER ADVANCING PAGE  
+WRITE 'PRINT-REC' FROM My-HDR  
+	 AFTER ADVANCING 1 LINE  
+WRITE 'PRINT-REC' FROM Cobol!-HDR  
+	 AFTER ADVANCING 1 LINE  
 
 A list of strings can be provided to be used as header titles, if the user defines fewer strings than lines in their header a generic title will be given to the header line instead.
 
