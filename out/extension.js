@@ -6,12 +6,16 @@ function activate(context) {
     const disposable = vscode.commands.registerCommand('extension.generateHeaderCode', function () {
         // Get the active text editor
         const editor = vscode.window.activeTextEditor;
-        //pulls user specified level numbers from user settings
+        //get all user specified settings
         //need to add condition that fires off an error if the highest !> lowest
         const highestLevel = vscode.workspace.getConfiguration().get('cobolprettyheaders.setHighestLevelNumber');
         const lowestLevel = vscode.workspace.getConfiguration().get('cobolprettyheaders.setLowestLevelNumber');
         const condensed = vscode.workspace.getConfiguration().get('cobolprettyheaders.condensedHeaders');
         const outputLocation = vscode.workspace.getConfiguration().get('cobolprettyheaders.setPrintOutputField');
+        const userDefinedHeaderNames = vscode.workspace.getConfiguration().get('cobolprettyheaders.setHeaderNames');
+        const defaultNamePrefix = vscode.workspace.getConfiguration().get('cobolprettyheaders.setDefaultNamePrefix');
+        //advance is used to keep track of how many lines the write procedure should put between lines
+        const advance = [];
         if (editor) {
             // start off by getting the document in the current editor and all the text in the document
             const document = editor.document;
@@ -22,20 +26,19 @@ function activate(context) {
             editor.edit(editBuilder => {
                 //we define Postion for our calls to insert, this sets the starting line to the number of lines the header is
                 const pos = new vscode.Position(allLines.length, 0);
-                //title pulls the first part of the line in the header that is not spaces
-                //we may include a setting to allow the user to define these either as a text input box or as a configuration setting
-                function getTitle(text) {
-                    for (let i = 0; i < text.length; i++) {
-                        if (text[i].trim().length != 0) {
-                            return text[i];
-                        }
+                //generic titles function generates a set of default titles for each line of the header, the user can change the prefix of the generic
+                //header titles
+                function getGenericTitles(lines) {
+                    const titles = [];
+                    for (let i = 0; i < lines.length; i++) {
+                        titles.push(defaultNamePrefix + (i + 1));
                     }
+                    return titles;
                 }
                 //process line creates a HeaderRecord object for each line, defining the title and data fields
-                function processLine(line) {
+                function processLine(line, headerTitle) {
                     const parts = line.split(/(\s+)/);
-                    console.log(parts);
-                    const title = getTitle(parts) + '-HDR';
+                    const title = headerTitle + '-HDR';
                     const data = [];
                     //if the used has set condensed headers to true, the data field will contain the entire line of the header
                     if (condensed) {
@@ -54,11 +57,30 @@ function activate(context) {
                     return h;
                 }
                 //process header returns an array containing HeaderRecords for each line of the header
+                //here is where we will need to deal with line breaks
+                //we could check the length of each line and increase a count, pushing it onto an array only when a line that isn't 0 length is found
                 function processHeader(lines) {
                     const headerData = [];
+                    const genericTitles = getGenericTitles(allLines);
+                    //here the user given names and the generic names are combined, this is so if the user does not provide enough titles for their
+                    //header default ones will be given
+                    const headerTitles = userDefinedHeaderNames.concat(genericTitles);
+                    //index used to match header title to line
+                    let index = 0;
+                    //line count used to count line advancement for write procedure, increased if the line is a break point, pushed to an array and 
+                    //reset to 1 if the line is written
+                    let lineCount = 1;
                     lines.forEach(line => {
-                        const processedLine = processLine(line);
-                        headerData.push(processedLine);
+                        if (line.length === 0) {
+                            lineCount++;
+                        }
+                        else {
+                            const processedLine = processLine(line, headerTitles[index]);
+                            headerData.push(processedLine);
+                            advance.push(lineCount);
+                            lineCount = 1;
+                            index++;
+                        }
                     });
                     return headerData;
                 }
@@ -73,18 +95,18 @@ function activate(context) {
                         editBuilder.insert(pos, '\n\n');
                     });
                 }
-                //generates the write procedure for the header, currently assumes 1 line between each header line, we will add functionality
-                //to allow for more than 1 line between header lines, as defined by header text
+                //generates the write procedure for the header, uses advance array generated by the processHeader function to determine how many line 
+                //advances are needed for each line of the header
                 function generateWriter(headerData) {
                     editBuilder.insert(pos, '\n');
                     editBuilder.insert(pos, '\nwrite-hdrs.');
                     for (let i = 0; i < headerData.length; i++) {
                         if (i === 0) {
                             //first line of the header always has after advancing page, may include setting to change this, not sure
-                            editBuilder.insert(pos, "\nWRITE '" + outputLocation + "' FROM " + headerData[i].title + '\n\t AFTER ADVANCING PAGE');
+                            editBuilder.insert(pos, "\n\tWRITE '" + outputLocation + "' FROM " + headerData[i].title + '\n\t\t AFTER ADVANCING PAGE');
                         }
                         else {
-                            editBuilder.insert(pos, "\nWRITE '" + outputLocation + "' FROM " + headerData[i].title + '\n\t AFTER ADVANCING 1 LINE');
+                            editBuilder.insert(pos, "\n\tWRITE '" + outputLocation + "' FROM " + headerData[i].title + '\n\t\t AFTER ADVANCING ' + advance[i] + ' LINES');
                         }
                     }
                 }
@@ -106,7 +128,16 @@ function activate(context) {
             });
         }
     });
+    //called by the user to bring up a new untitled tab to write their header to before calling generate header code to generate the cobol code
+    const anotherDisposable = vscode.commands.registerTextEditorCommand('extension.createHeader', function () {
+        async function openWindow() {
+            const document = await vscode.workspace.openTextDocument();
+            vscode.window.showTextDocument(document);
+        }
+        openWindow();
+    });
     context.subscriptions.push(disposable);
+    context.subscriptions.push(anotherDisposable);
 }
 exports.activate = activate;
 //# sourceMappingURL=extension.js.map

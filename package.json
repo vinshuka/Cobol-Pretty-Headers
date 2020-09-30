@@ -11,7 +11,8 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.generateHeaderCode"
+        "onCommand:extension.generateHeaderCode",
+        "onCommand:extension.createHeader"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -38,6 +39,15 @@
                         "type":"string",
                         "default": "output",
                         "description": "Set the name of the output for the header write procedure, default is set to 'output'"
+                    },
+                    "cobolprettyheaders.setHeaderNames": {
+                        "type":"array",
+                        "description": "Enter preferred name for each header line data definition. The '-HDR' suffix will be added automatically to entered names. Note if there are more header lines than user given names, a default name will be provided."
+                    },
+                    "cobolprettyheaders.setDefaultNamePrefix": {
+                        "type":"string",
+                        "default": "header",
+                        "description": "Enter a string that will be used to create default header names. Example: if you put 'my-header', the resulting default names will be 'my-header1-HDR, my-header2-HDR, ...etc."
                     }
                 }
             }
@@ -45,7 +55,11 @@
         "commands": [
             {
                 "command": "extension.generateHeaderCode",
-                "title": "Generate Header"
+                "title": "Generate Header Code"
+            },
+            {
+                "command": "extension.createHeader",
+                "title": "Create Header"
             }
         ]
     },
