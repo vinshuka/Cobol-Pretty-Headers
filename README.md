@@ -24,7 +24,7 @@ Regular header:
 	05 FILLER	PIC X(1)	VALUE SPACES  
 	05 FILLER	PIC X(5)	VALUE "World"  
   
-01 My-HDR.  						
+01 My-HDR.  
 	05 FILLER	PIC X(2)	VALUE "My"  
 	05 FILLER	PIC X(1)	VALUE SPACES  
 	05 FILLER	PIC X(4)	VALUE "Name"  
