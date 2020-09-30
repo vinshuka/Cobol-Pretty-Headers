@@ -18,21 +18,21 @@ Hello World
 My Name is  
 Cobol!
 
-Regular header:  												  
-01 Hello-HDR.  													
-	05 FILLER	PIC X(5)	VALUE "Hello"  							  	
-	05 FILLER	PIC X(1)	VALUE SPACES  							
-	05 FILLER	PIC X(5)	VALUE "World"  							  
-  
-01 My-HDR.  														
-	05 FILLER	PIC X(2)	VALUE "My"  								  
-	05 FILLER	PIC X(1)	VALUE SPACES  								  
-	05 FILLER	PIC X(4)	VALUE "Name"    
+Regular header:  
+01 Hello-HDR.  
+	05 FILLER	PIC X(5)	VALUE "Hello"  
 	05 FILLER	PIC X(1)	VALUE SPACES  
-	05 FILLER	PIC X(2)	VALUE "is"    
+	05 FILLER	PIC X(5)	VALUE "World"  
   
-01 Cobol!-HDR.  														 
-	05 FILLER	PIC X(6)	VALUE "Cobol!"  								  
+01 My-HDR.  						
+	05 FILLER	PIC X(2)	VALUE "My"  
+	05 FILLER	PIC X(1)	VALUE SPACES  
+	05 FILLER	PIC X(4)	VALUE "Name"  
+	05 FILLER	PIC X(1)	VALUE SPACES  
+	05 FILLER	PIC X(2)	VALUE "is"  
+  
+01 Cobol!-HDR.  								 
+	05 FILLER	PIC X(6)	VALUE "Cobol!"  
   
   
 write-hdrs.  
