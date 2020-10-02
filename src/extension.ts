@@ -1,6 +1,8 @@
 'use strict';
 
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
 
 type HeaderRecord = {
 	title: string,
@@ -8,6 +10,14 @@ type HeaderRecord = {
 };
 
 export function activate(context: vscode.ExtensionContext) {
+
+	const provider = new TreeDataProvider();
+	vscode.window.registerTreeDataProvider('treeview', provider);
+	vscode.commands.registerCommand('extension.addEntry', async function () {
+		const input = await vscode.window.showInputBox();
+		provider.addTreeItem(<string>input);
+	});
+
 	const disposable = vscode.commands.registerCommand('extension.generateHeaderCode', function () {
 		// Get the active text editor
 		const editor = vscode.window.activeTextEditor;
@@ -160,4 +170,44 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(anotherDisposable);
+}
+
+
+
+class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
+	onDidChangeTreeData?: vscode.Event<TreeItem|null|undefined>|undefined;
+
+	data: TreeItem[];
+	
+	constructor() {
+		this.data = [new TreeItem('Maple'), new TreeItem('Spruce'), new TreeItem('Pine'), new TreeItem('Oak')];
+	}
+
+	addTreeItem(name: string) {
+		this.data.push(new TreeItem(name));
+	}
+
+	getTreeItem(element: TreeItem): vscode.TreeItem|Thenable<vscode.TreeItem> {
+		return element;
+	}
+
+	getChildren(element?: TreeItem|undefined): vscode.ProviderResult<TreeItem[]> {
+		if (element === undefined) {
+			return this.data;
+		}
+		return element.children;
+	}
+}
+
+class TreeItem extends vscode.TreeItem {
+	children: TreeItem[] | undefined;
+
+	constructor(label: string, children?: TreeItem[]) {
+		super(
+			label,
+			children === undefined ? vscode.TreeItemCollapsibleState.None :
+			vscode.TreeItemCollapsibleState.Expanded
+		);
+		this.children = children;
+	}
 }

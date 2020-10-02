@@ -12,7 +12,8 @@
     ],
     "activationEvents": [
         "onCommand:extension.generateHeaderCode",
-        "onCommand:extension.createHeader"
+        "onCommand:extension.createHeader",
+        "onView:treeview"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -60,8 +61,28 @@
             {
                 "command": "extension.createHeader",
                 "title": "Create Header"
+            },
+            {
+                "command": "extension.addEntry",
+                "title": "Add"
             }
-        ]
+        ],
+        "views": {
+            "explorer": [
+                {
+                    "id": "treeview",
+                    "name": "Tree View"
+                }
+            ]
+        },
+        "menus": {
+            "view/title": [
+                {
+                    "command": "extension.addEntry",
+                    "when": "view == treeview"
+                }
+            ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
@@ -76,5 +97,10 @@
         "eslint": "^7.1.0",
         "typescript": "^4.0.2",
         "@types/vscode": "^1.32.0"
+    },
+    "trees": {
+        "Maple": "maple",
+        "Spruce": "spruce",
+        "Pine": "Pine"
     }
 }

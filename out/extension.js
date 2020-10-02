@@ -3,6 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = void 0;
 const vscode = require("vscode");
 function activate(context) {
+    const provider = new TreeDataProvider();
+    vscode.window.registerTreeDataProvider('treeview', provider);
+    vscode.commands.registerCommand('extension.addEntry', async function () {
+        const input = await vscode.window.showInputBox();
+        provider.addTreeItem(input);
+    });
     const disposable = vscode.commands.registerCommand('extension.generateHeaderCode', function () {
         // Get the active text editor
         const editor = vscode.window.activeTextEditor;
@@ -140,4 +146,28 @@ function activate(context) {
     context.subscriptions.push(anotherDisposable);
 }
 exports.activate = activate;
+class TreeDataProvider {
+    constructor() {
+        this.data = [new TreeItem('Maple'), new TreeItem('Spruce'), new TreeItem('Pine'), new TreeItem('Oak')];
+    }
+    addTreeItem(name) {
+        this.data.push(new TreeItem(name));
+    }
+    getTreeItem(element) {
+        return element;
+    }
+    getChildren(element) {
+        if (element === undefined) {
+            return this.data;
+        }
+        return element.children;
+    }
+}
+class TreeItem extends vscode.TreeItem {
+    constructor(label, children) {
+        super(label, children === undefined ? vscode.TreeItemCollapsibleState.None :
+            vscode.TreeItemCollapsibleState.Expanded);
+        this.children = children;
+    }
+}
 //# sourceMappingURL=extension.js.map
