@@ -3,11 +3,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = void 0;
 const vscode = require("vscode");
 function activate(context) {
+    //declare tree data provider and register it to our treeview
     const provider = new TreeDataProvider();
-    vscode.window.registerTreeDataProvider('treeview', provider);
+    vscode.window.registerTreeDataProvider('headerview', provider);
+    //tree view commands
     vscode.commands.registerCommand('extension.addEntry', async function () {
         const input = await vscode.window.showInputBox();
         provider.addTreeItem(input);
+        provider.refresh();
+    });
+    vscode.commands.registerCommand('extension.editEntry', async (node) => {
+        const input = await vscode.window.showInputBox({ value: node.label });
+        provider.editTreeItem(node, input);
+        provider.refresh();
+    });
+    vscode.commands.registerCommand('extension.deleteEntry', (node) => {
+        provider.deleteTreeItem(node);
+        provider.refresh();
+    });
+    vscode.commands.registerCommand('extension.clearEntries', function () {
+        provider.clearTreeItems();
+        provider.refresh();
     });
     const disposable = vscode.commands.registerCommand('extension.generateHeaderCode', function () {
         // Get the active text editor
@@ -22,6 +38,8 @@ function activate(context) {
         const defaultNamePrefix = vscode.workspace.getConfiguration().get('cobolprettyheaders.setDefaultNamePrefix');
         //advance is used to keep track of how many lines the write procedure should put between lines
         const advance = [];
+        const treeViewList = provider.getTreeItemsList();
+        console.log("List of items in treeview:" + treeViewList.toString());
         if (editor) {
             // start off by getting the document in the current editor and all the text in the document
             const document = editor.document;
@@ -70,7 +88,8 @@ function activate(context) {
                     const genericTitles = getGenericTitles(allLines);
                     //here the user given names and the generic names are combined, this is so if the user does not provide enough titles for their
                     //header default ones will be given
-                    const headerTitles = userDefinedHeaderNames.concat(genericTitles);
+                    //const headerTitles = userDefinedHeaderNames.concat(genericTitles);
+                    const headerTitles = treeViewList.concat(userDefinedHeaderNames, genericTitles);
                     //index used to match header title to line
                     let index = 0;
                     //line count used to count line advancement for write procedure, increased if the line is a break point, pushed to an array and 
@@ -146,16 +165,53 @@ function activate(context) {
     context.subscriptions.push(anotherDisposable);
 }
 exports.activate = activate;
+//gives state and behavior to our tree view
 class TreeDataProvider {
+    //constructor with dummy data
     constructor() {
-        this.data = [new TreeItem('Maple'), new TreeItem('Spruce'), new TreeItem('Pine'), new TreeItem('Oak')];
+        //on change events used to refesh the treeview data
+        this._onDidChangeTreeData = new vscode.EventEmitter();
+        this.onDidChangeTreeData = this._onDidChangeTreeData.event;
+        this.data = [new HeaderTitle('hello', 'headerTitle')];
     }
+    //refresh method used to refreah the tree view data
+    refresh() {
+        this._onDidChangeTreeData.fire(undefined);
+    }
+    //add tree item allows the user to add another header title to the tree view list, validates that the given string is at least 1 character and 
+    //not undefined
     addTreeItem(name) {
-        this.data.push(new TreeItem(name));
+        if (name === 'undefined' || name.length === 0) {
+            vscode.window.showWarningMessage('Header Title must contain at least one character.');
+        }
+        else {
+            this.data.push(new HeaderTitle(name, 'headerTitle'));
+        }
     }
+    //edit tree item sets the label of the given HeaderTitle to the given string
+    editTreeItem(node, name) {
+        node.label = name;
+    }
+    deleteTreeItem(node) {
+        this.data = this.data.filter(item => item != node);
+    }
+    clearTreeItems() {
+        this.data = [];
+    }
+    //returns a list of all the items in the tree view, used by generate header code to include header titles in tree view as the titles to use for the
+    //current instance
+    getTreeItemsList() {
+        const itemList = [];
+        this.data.forEach(item => {
+            itemList.push(item.label);
+        });
+        return itemList;
+    }
+    //implementation method for TreeDataProvider
     getTreeItem(element) {
         return element;
     }
+    //implementation method for TreeDataProvider
     getChildren(element) {
         if (element === undefined) {
             return this.data;
@@ -163,11 +219,13 @@ class TreeDataProvider {
         return element.children;
     }
 }
-class TreeItem extends vscode.TreeItem {
-    constructor(label, children) {
+//class for creating HeaderTitle objects, needs the context value so that specific items can be referenced as part of our tree view context
+class HeaderTitle extends vscode.TreeItem {
+    constructor(label, contextValue, children) {
         super(label, children === undefined ? vscode.TreeItemCollapsibleState.None :
             vscode.TreeItemCollapsibleState.Expanded);
         this.children = children;
+        this.contextValue = 'headerTitle';
     }
 }
 //# sourceMappingURL=extension.js.map

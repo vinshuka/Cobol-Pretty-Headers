@@ -13,16 +13,16 @@
     "activationEvents": [
         "onCommand:extension.generateHeaderCode",
         "onCommand:extension.createHeader",
-        "onView:treeview"
+        "onView:headerview"
     ],
     "main": "./out/extension",
     "contributes": {
-        "configuration":[
+        "configuration": [
             {
                 "title": "Cobol Pretty Headers",
                 "properties": {
                     "cobolprettyheaders.setHighestLevelNumber": {
-                        "type":"string",
+                        "type": "string",
                         "default": "01",
                         "description": "Enter the highest level number you'd like for header field definitions."
                     },
@@ -32,21 +32,21 @@
                         "description": "Enter the lowest level number you'd like for the sub-fields in the header definition. Note that this must be lower than the highest level number."
                     },
                     "cobolprettyheaders.condensedHeaders": {
-                        "type":"boolean",
+                        "type": "boolean",
                         "default": false,
                         "description": "Check to change header data fields to condensed, condensed data fields will store each full line of the header in a single data field instead of separate ones for each word and space."
                     },
                     "cobolprettyheaders.setPrintOutputField": {
-                        "type":"string",
+                        "type": "string",
                         "default": "output",
                         "description": "Set the name of the output for the header write procedure, default is set to 'output'"
                     },
                     "cobolprettyheaders.setHeaderNames": {
-                        "type":"array",
+                        "type": "array",
                         "description": "Enter preferred name for each header line data definition. The '-HDR' suffix will be added automatically to entered names. Note if there are more header lines than user given names, a default name will be provided."
                     },
                     "cobolprettyheaders.setDefaultNamePrefix": {
-                        "type":"string",
+                        "type": "string",
                         "default": "header",
                         "description": "Enter a string that will be used to create default header names. Example: if you put 'my-header', the resulting default names will be 'my-header1-HDR, my-header2-HDR, ...etc."
                     }
@@ -65,13 +65,25 @@
             {
                 "command": "extension.addEntry",
                 "title": "Add"
+            },
+            {
+                "command": "extension.editEntry",
+                "title": "Edit"
+            },
+            {
+                "command": "extension.deleteEntry",
+                "title": "Delete"
+            },
+            {
+                "command": "extension.clearEntries",
+                "title": "Clear"
             }
         ],
         "views": {
             "explorer": [
                 {
-                    "id": "treeview",
-                    "name": "Tree View"
+                    "id": "headerview",
+                    "name": "Header Titles"
                 }
             ]
         },
@@ -79,10 +91,30 @@
             "view/title": [
                 {
                     "command": "extension.addEntry",
-                    "when": "view == treeview"
+                    "when": "view == headerview"
+                },
+                {
+                    "command": "extension.clearEntries",
+                    "when": "view == headerview"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "extension.editEntry",
+                    "when": "view == headerview && viewItem == headerTitle"
+                },
+                {
+                    "command": "extension.deleteEntry",
+                    "when": "view == headerview && viewItem == headerTitle"
                 }
             ]
-        }
+        },
+        "viewsWelcome": [
+            {
+                "view": "headerview",
+                "contents": "Add a Header Titles to use for the current Header\n [Add Title](command:extension.addEntry)"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
@@ -91,16 +123,11 @@
         "watch": "tsc -watch -p ./"
     },
     "devDependencies": {
-        "@types/node": "^12.12.0",
-        "@typescript-eslint/eslint-plugin": "^3.0.2",
-        "@typescript-eslint/parser": "^3.0.2",
-        "eslint": "^7.1.0",
-        "typescript": "^4.0.2",
-        "@types/vscode": "^1.32.0"
-    },
-    "trees": {
-        "Maple": "maple",
-        "Spruce": "spruce",
-        "Pine": "Pine"
+        "@types/node": "^12.12.62",
+        "@types/vscode": "^1.49.0",
+        "@typescript-eslint/eslint-plugin": "^3.10.1",
+        "@typescript-eslint/parser": "^3.10.1",
+        "eslint": "^7.10.0",
+        "typescript": "^4.0.3"
     }
 }

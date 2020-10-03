@@ -4,7 +4,7 @@ A VS Code extension to generate code required for report headers in Cobol
 
 Use the command pallet (crtl-shift-p) and call the command "Create Header" this will pull up a new text document to write your header in. Once the header is the way you want, use the command pallet again and call "Generate Header Code" the required code for the header data fields and the code to write the header will appear below your header. Simply copy and paste the header data fields into your cobol file under the Working Storage Section and then paste the write code into the Procedure Division. 
 
-# User Defined Settings
+## User Defined Settings
 
 Highest and Lowest Level numbers can be set by the user, with the restriction that lowest cannot be a higher level than highest. Default values are 01 for highest and 05 for lowest.
 
@@ -66,5 +66,9 @@ write-hdrs.
 A list of strings can be provided to be used as header titles, if the user defines fewer strings than lines in their header a generic title will be given to the header line instead.
 
 The prefix of the generic header titles can also be changed by the user, for example if the user puts 'my-header' the generated generic headers would be 'my-header1', 'my-header2', and so on.
+
+## Header Title add/edit/delete view
+
+A Tree view is included in the explorer where the user can add header titles to be used for in the header code generation, allows for the user to quickly change the header titles without needing to set default titles or generic title prefixes in the settings. The treeview menu can be used to add new titles or to clear the view, and right-clicking on existing titles allows the user to edit or delete existing titles.
 
 
