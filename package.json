@@ -77,6 +77,10 @@
             {
                 "command": "extension.clearEntries",
                 "title": "Clear"
+            },
+            {
+                "command": "extension.getCursor",
+                "title": "Get Cursor"
             }
         ],
         "views": {

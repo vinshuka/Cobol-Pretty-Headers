@@ -25,6 +25,17 @@ function activate(context) {
         provider.clearTreeItems();
         provider.refresh();
     });
+    //this is going to become two commands, one to place the data fields and one to place the write procedure, then all the user does is call each
+    //command at the location they want to paste the generated code
+    vscode.commands.registerCommand('extension.getCursor', function () {
+        const myeditor = vscode.window.activeTextEditor;
+        if (myeditor === undefined) {
+            throw new Error('undefined!');
+        }
+        const cursor = myeditor.selection.active;
+        console.log('Cursor:' + cursor.line);
+        myeditor.edit(editbuilder => editbuilder.insert(cursor, 'hello'));
+    });
     const disposable = vscode.commands.registerCommand('extension.generateHeaderCode', function () {
         // Get the active text editor
         const editor = vscode.window.activeTextEditor;
@@ -55,14 +66,14 @@ function activate(context) {
                 function getGenericTitles(lines) {
                     const titles = [];
                     for (let i = 0; i < lines.length; i++) {
-                        titles.push(defaultNamePrefix + (i + 1));
+                        titles.push(defaultNamePrefix.toUpperCase() + (i + 1));
                     }
                     return titles;
                 }
                 //process line creates a HeaderRecord object for each line, defining the title and data fields
                 function processLine(line, headerTitle) {
                     const parts = line.split(/(\s+)/);
-                    const title = headerTitle + '-HDR';
+                    const title = headerTitle.toUpperCase() + '-HDR';
                     const data = [];
                     //if the used has set condensed headers to true, the data field will contain the entire line of the header
                     if (condensed) {
@@ -124,7 +135,7 @@ function activate(context) {
                 //advances are needed for each line of the header
                 function generateWriter(headerData) {
                     editBuilder.insert(pos, '\n');
-                    editBuilder.insert(pos, '\nwrite-hdrs.');
+                    editBuilder.insert(pos, '\nWRITE-HDRS.');
                     for (let i = 0; i < headerData.length; i++) {
                         if (i === 0) {
                             //first line of the header always has after advancing page, may include setting to change this, not sure
