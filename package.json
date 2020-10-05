@@ -49,6 +49,11 @@
                         "type": "string",
                         "default": "header",
                         "description": "Enter a string that will be used to create default header names. Example: if you put 'my-header', the resulting default names will be 'my-header1-HDR, my-header2-HDR, ...etc."
+                    },
+                    "cobolprettyheaders.setWriteProcedureName": {
+                        "type": "string",
+                        "default": "write-hdrs",
+                        "description": "Enter the default name that you wish to you for the header write procedure."
                     }
                 }
             }
@@ -79,8 +84,12 @@
                 "title": "Clear"
             },
             {
-                "command": "extension.getCursor",
-                "title": "Get Cursor"
+                "command": "extension.placeDataFields",
+                "title": "Place Header Data Fields"
+            }, 
+            {
+                "command": "extension.placeWriteProcedure",
+                "title": "Place Header Write Procedure"
             }
         ],
         "views": {
