@@ -38,7 +38,7 @@
                     },
                     "cobolprettyheaders.setPrintOutputField": {
                         "type": "string",
-                        "default": "output",
+                        "default": "PRINT-OUTPUT",
                         "description": "Set the name of the output for the header write procedure, default is set to 'output'"
                     },
                     "cobolprettyheaders.setHeaderNames": {
