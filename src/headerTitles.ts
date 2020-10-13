@@ -18,18 +18,24 @@ export class HeaderTitleDataProvider implements vscode.TreeDataProvider<HeaderTi
 	//data variable
 	data: HeaderTitle[]
 	
-	//constructor with dummy data
+	//constructor with base parent titles for each title group
 	constructor() {
-		this.data = [new HeaderTitle('hello', 'headerTitle')];
+		this.data = [new HeaderTitle('Data Field Titles', 'dataTitle', []), new HeaderTitle('Write Procedure Title', 'writeTitle', [])];
 	}
 
-	//add tree item allows the user to add another header title to the tree view list, validates that the given string is at least 1 character and 
-	//not undefined
-	addTreeItem(name: string) {
+	//add tree items checks if the title is atleast 1 character long and not undefined, it also checks that the user does not already have a write
+	//procedure title since only 1 is allowed, if everything is good it adds a new title to the correct parent using the given index, and gives
+	//the new item its context value based on the given index as well
+	addTreeItem(name: string, index: number) {
+		const contextValues: string[] = ['dataFieldTitle', 'writeProcedureTitle'];
 		if (name === 'undefined' || name.length === 0) {
 			vscode.window.showWarningMessage('Header Title must contain at least one character.');
-		} else {
-			this.data.push(new HeaderTitle(name, 'headerTitle'));
+		} 
+		else if (index === 1 && this.data[1].children?.length != 0) {
+			vscode.window.showWarningMessage('Only one write procedure title can be given');
+		}
+		else {
+			this.data[index].children?.push(new HeaderTitle(name, contextValues[index]));
 		}
 	}
 
@@ -38,22 +44,47 @@ export class HeaderTitleDataProvider implements vscode.TreeDataProvider<HeaderTi
 		node.label = name;	
 	}
 
+	//deleteTreeItem checks the node's contextValue to determine which parent list to filter and replace
 	deleteTreeItem(node: HeaderTitle) {
-		this.data = this.data.filter(item => item != node);
+		if (node.contextValue === 'dataFieldTitle') {
+			this.data[0].children = this.data[0].children?.filter(item => item != node);
+		} 
+		else if (node.contextValue === 'writeProcedureTitle') {
+			this.data[1].children = this.data[1].children?.filter(item => item != node);
+		}
 	}
 
+	//clear tree items, clears the treeview except for the parent groups
+	//TODO: maybe change these 3 functions into one function that contains a switch case
 	clearTreeItems() {
-		this.data = [];
+		this.data = [new HeaderTitle('Data Field Titles', 'dataTitle', []), new HeaderTitle('Write Procedure Title', 'writeTitle', [])];
+	}
+
+	clearDataTreeItems() {
+		this.data = [new HeaderTitle('Data Field Titles', 'dataTitle', []), this.data[1]];
+	}
+
+	clearWriteTreeItems() {
+		this.data = [this.data[0], new HeaderTitle('Write Procedure Title', 'writeTitle', [])];
 	}
 
 	//returns a list of all the items in the tree view, used by generate header code to include header titles in tree view as the titles to use for the
 	//current instance
 	getTreeItemsList(): string[] {
 		const itemList: string[] = [];
-		this.data.forEach(item => {
+		this.data[0].children?.forEach(item => {
 			itemList.push(<string>item.label);
 		});
 		return itemList;
+	}
+
+	//getWriteProcedureTitle gets the title to be used in the cobol code generation
+	getWriteProcedureTitle(): string {
+		let writeItem = "";
+		if(this.data[1].children != undefined) {
+			writeItem = <string>this.data[1].children[0].label;
+		}
+		return writeItem;
 	}
 
 	//implementation method for TreeDataProvider
@@ -79,11 +110,8 @@ export class HeaderTitle extends vscode.TreeItem {
 			label,
 			children === undefined ? vscode.TreeItemCollapsibleState.None :
 			vscode.TreeItemCollapsibleState.Expanded
-			
-			
 		);
 		this.children = children;
-		this.contextValue = 'headerTitle';
-		
+		this.contextValue = contextValue;
 	}
 }

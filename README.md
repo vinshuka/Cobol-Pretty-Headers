@@ -69,8 +69,10 @@ The prefix of the generic header titles can also be changed by the user, for exa
 
 The user can also set a default name for the write procedure.
 
-## Header Title add/edit/delete view
+There is an option to include indentation in the code generation, this will indent the cobol to the correct area allowing the user to simply place it in their cobol file without needing to edit the code afterwards. This option is checked by default but can be unchecked if the user wishes to add their own indentation.
 
-A Tree view is included in the explorer where the user can add header titles to be used for in the header code generation, allows for the user to quickly change the header titles without needing to set default titles or generic title prefixes in the settings. The treeview menu can be used to add new titles or to clear the view, and right-clicking on existing titles allows the user to edit or delete existing titles.
+## Header Title and Write Procedure add/edit/delete view
+
+A Tree view is included to allow the user to quickly add header data field titles and the write procedure title without having to define them in the settings, used if the user wants to just change the titles short term. Titles can be added by right clicking the group title and selecting add, note that only one write procedure title can be in the list at a time. There is also a clear option if the user wants to clear the entries in the group. Individual titles can be edited or deleted by right-clicking on the title item. The whole list can be cleared by clicking the treeview's meatball menu and selecting 'clear all'. 
 
 

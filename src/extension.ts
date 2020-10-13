@@ -16,9 +16,14 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerTreeDataProvider('headerview', provider);
 	
 	//tree view commands
-	vscode.commands.registerCommand('extension.addEntry', async function () {
+	vscode.commands.registerCommand('extension.addDataEntry', async function () {
 		const input = await vscode.window.showInputBox();
-		provider.addTreeItem(<string>input);
+		provider.addTreeItem(<string>input, 0);
+		provider.refresh();
+	});
+	vscode.commands.registerCommand('extension.addWriteEntry', async function () {
+		const input = await vscode.window.showInputBox();
+		provider.addTreeItem(<string>input, 1);
 		provider.refresh();
 	});
 	vscode.commands.registerCommand('extension.editEntry', async (node: HeaderTitle) => {
@@ -28,6 +33,16 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	vscode.commands.registerCommand('extension.deleteEntry', (node: HeaderTitle) => {
 		provider.deleteTreeItem(node);
+		provider.refresh();
+	});
+
+	vscode.commands.registerCommand('extension.clearDataEntries', function () {
+		provider.clearDataTreeItems();
+		provider.refresh();
+	});
+
+	vscode.commands.registerCommand('extension.clearWriteEntries', function () {
+		provider.clearWriteTreeItems();
 		provider.refresh();
 	});
 
@@ -61,20 +76,35 @@ export function activate(context: vscode.ExtensionContext) {
 		// Get the active text editor
 		const editor = vscode.window.activeTextEditor;
 
+		const treeViewList = provider.getTreeItemsList();
+		const treeViewWriteTitle = provider.getWriteProcedureTitle();
+
 		//get all user specified settings
 		//need to add condition that fires off an error if the highest !> lowest
 		const highestLevel = vscode.workspace.getConfiguration().get('cobolprettyheaders.setHighestLevelNumber');
 		const lowestLevel = vscode.workspace.getConfiguration().get('cobolprettyheaders.setLowestLevelNumber');
 		const condensed = vscode.workspace.getConfiguration().get('cobolprettyheaders.condensedHeaders');
+		const indentation = vscode.workspace.getConfiguration().get('cobolprettyheaders.includeIndentation');
 		const outputLocation = vscode.workspace.getConfiguration().get('cobolprettyheaders.setPrintOutputField');
 		const userDefinedHeaderNames = <string[]>vscode.workspace.getConfiguration().get('cobolprettyheaders.setHeaderNames');
 		const defaultNamePrefix = <string>vscode.workspace.getConfiguration().get('cobolprettyheaders.setDefaultNamePrefix');
-		const writeProcedureName = <string>vscode.workspace.getConfiguration().get('cobolprettyheaders.setWriteProcedureName');
+
+		//here we determine if the user has provided a write procedure title through the treeview, if so that value is used, if not the value
+		//defined in the settings is used
+		let writeProcedureName = "";
+		if(treeViewWriteTitle.length === 0) {
+			writeProcedureName = <string>vscode.workspace.getConfiguration().get('cobolprettyheaders.setWriteProcedureName');
+		}
+		else {
+			writeProcedureName = treeViewWriteTitle;
+		}
 
 		//advance is used to keep track of how many lines the write procedure should put between lines
 		const advance: number[] = [];
 
-		const treeViewList = provider.getTreeItemsList();
+		//clear dataFields and Write Procedure strings
+		writeProcedure ="";
+		dataFields = "";
 
 		if (editor) {
 			// start off by getting the document in the current editor and all the text in the document
@@ -106,7 +136,13 @@ export function activate(context: vscode.ExtensionContext) {
 					const data: string[] = [];
 					//if the used has set condensed headers to true, the data field will contain the entire line of the header
 					if (condensed) {
-						data.push('\n           ' + lowestLevel + ' FILLER    PIC X(' + line.length + ')    VALUE "' + line + '".');
+						//if the user has the indentation setting turned on, the indention is automatically included
+						if (indentation) {
+							data.push('\n           ' + lowestLevel + ' FILLER    PIC X(' + line.length + ')    VALUE "' + line + '".');
+						}
+						else {
+							data.push('\n'+ lowestLevel + ' FILLER    PIC X(' + line.length + ')    VALUE "' + line + '".');
+						}
 					}
 					else {
 						parts.forEach(part => {
@@ -114,8 +150,14 @@ export function activate(context: vscode.ExtensionContext) {
 							//being defined only contains spaces, a ternary condition sets the value to SPACES
 							//in the case of the user using tab to start their header, a empty string can appear, this condition discards it
 							if(part.length > 0) {
-								data.push('\n           ' + lowestLevel + ' FILLER    PIC X(' + part.length +')    VALUE ' 
+								if (indentation) {
+									data.push('\n           ' + lowestLevel + ' FILLER    PIC X(' + part.length +')    VALUE ' 
 								+ (!part.trim().length ? "SPACES." : '"'+ part+ '".'));
+								}
+								else {
+									data.push('\n' + lowestLevel + ' FILLER    PIC X(' + part.length +')    VALUE ' 
+								+ (!part.trim().length ? "SPACES." : '"'+ part+ '".'));
+								}
 							}
 						});
 					}
@@ -159,9 +201,14 @@ export function activate(context: vscode.ExtensionContext) {
 				function generateDataFields(headerData: HeaderRecord[]) {
 					//let dataFields = "";
 					headerData.forEach(hData => {
-						dataFields += "       " + highestLevel + " " + hData.title + ".";
+						if (indentation) {
+							dataFields += "       " + highestLevel + " " + hData.title + ".";
+						}
+						else {
+							dataFields += highestLevel + " " + hData.title + ".";
+						}
 						for (let i = 0; i < hData.data.length; i++) {
-								dataFields += hData.data[i];
+							dataFields += hData.data[i];
 						}
 						//this puts two lines between the data fields and the write procedure
 						dataFields += '\n\n';	
@@ -172,17 +219,34 @@ export function activate(context: vscode.ExtensionContext) {
 				//generates the write procedure for the header, uses advance array generated by the processHeader function to determine how many line 
 				//advances are needed for each line of the header
 				function generateWriter(headerData: HeaderRecord[]) {
-					//let writeProcedure = "";
-					writeProcedure += '\n       WRITE-HDRS.';
+					if (indentation) {
+						writeProcedure += '\n       ' + writeProcedureName.toUpperCase();
+					}
+					else {
+						writeProcedure += '\n' + writeProcedureName.toUpperCase();
+					}
+					//TODO: add alternate version without indentation
 					for (let i = 0; i < headerData.length; i++) {
 						if (i === 0) {
 							//first line of the header always has after advancing page, may include setting to change this, not sure
-							writeProcedure += '\n           WRITE ' + outputLocation + ' FROM ' + headerData[i].title 
+							if (indentation) {
+								writeProcedure += '\n           WRITE ' + outputLocation + ' FROM ' + headerData[i].title 
 							+ '\n               AFTER ADVANCING PAGE.';
+							}
+							else {
+								writeProcedure += '\nWRITE ' + outputLocation + ' FROM ' + headerData[i].title 
+							+ '\nAFTER ADVANCING PAGE.';
+							}
 						}
 						else {
-							writeProcedure += '\n           WRITE ' + outputLocation + ' FROM ' + headerData[i].title 
+							if (indentation) {
+								writeProcedure += '\n           WRITE ' + outputLocation + ' FROM ' + headerData[i].title 
 							+ '\n               AFTER ADVANCING ' + advance[i] + ' LINES.';
+							}
+							else {
+								writeProcedure += '\nWRITE ' + outputLocation + ' FROM ' + headerData[i].title 
+							+ '\nAFTER ADVANCING ' + advance[i] + ' LINES.';
+							}
 						}
 					}
 					editBuilder.insert(pos, writeProcedure);

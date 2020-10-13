@@ -36,6 +36,11 @@
                         "default": false,
                         "description": "Check to change header data fields to condensed, condensed data fields will store each full line of the header in a single data field instead of separate ones for each word and space."
                     },
+                    "cobolprettyheaders.includeIndentation": {
+                        "type":"boolean",
+                        "default": true,
+                        "description": "Generated code will include indentation, uncheck if you wish to use a different indentation style."
+                    },
                     "cobolprettyheaders.setPrintOutputField": {
                         "type": "string",
                         "default": "PRINT-OUTPUT",
@@ -68,8 +73,12 @@
                 "title": "Create Header"
             },
             {
-                "command": "extension.addEntry",
-                "title": "Add"
+                "command": "extension.addDataEntry",
+                "title": "Add Data Field Title"
+            },
+            {
+                "command": "extension.addWriteEntry",
+                "title": "Add Write Procedure Title"
             },
             {
                 "command": "extension.editEntry",
@@ -80,8 +89,16 @@
                 "title": "Delete"
             },
             {
+                "command": "extension.clearDataEntries",
+                "title": "Clear Data Field Titles"
+            },
+            {
+                "command": "extension.clearWriteEntries",
+                "title": "Clear Write Procedure Title"
+            },
+            {
                 "command": "extension.clearEntries",
-                "title": "Clear"
+                "title": "Clear All"
             },
             {
                 "command": "extension.placeDataFields",
@@ -103,10 +120,6 @@
         "menus": {
             "view/title": [
                 {
-                    "command": "extension.addEntry",
-                    "when": "view == headerview"
-                },
-                {
                     "command": "extension.clearEntries",
                     "when": "view == headerview"
                 }
@@ -114,20 +127,30 @@
             "view/item/context": [
                 {
                     "command": "extension.editEntry",
-                    "when": "view == headerview && viewItem == headerTitle"
+                    "when": "view == headerview && viewItem == dataFieldTitle || viewItem == writeProcedureTitle"
                 },
                 {
                     "command": "extension.deleteEntry",
-                    "when": "view == headerview && viewItem == headerTitle"
+                    "when": "view == headerview && viewItem == dataFieldTitle || viewItem == writeProcedureTitle"
+                },
+                {
+                    "command": "extension.addDataEntry",
+                    "when": "view == headerview && viewItem == dataTitle" 
+                },
+                {
+                    "command": "extension.addWriteEntry",
+                    "when": "view == headerview && viewItem == writeTitle" 
+                },
+                {
+                    "command": "extension.clearDataEntries",
+                    "when": "view == headerview && viewItem == dataTitle"
+                },
+                {
+                    "command": "extension.clearWriteEntries",
+                    "when": "view == headerview && viewItem == writeTitle"
                 }
             ]
-        },
-        "viewsWelcome": [
-            {
-                "view": "headerview",
-                "contents": "Add a Header Titles to use for the current Header\n [Add Title](command:extension.addEntry)"
-            }
-        ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
