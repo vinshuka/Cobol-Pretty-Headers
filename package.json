@@ -113,7 +113,8 @@
             "explorer": [
                 {
                     "id": "headerview",
-                    "name": "Header Titles"
+                    "name": "Header Titles",
+                    "when": "ext:isVisable"
                 }
             ]
         },

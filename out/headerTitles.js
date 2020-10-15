@@ -46,15 +46,21 @@ class HeaderTitleDataProvider {
         }
     }
     //clear tree items, clears the treeview except for the parent groups
-    //TODO: maybe change these 3 functions into one function that contains a switch case
-    clearTreeItems() {
-        this.data = [new HeaderTitle('Data Field Titles', 'dataTitle', []), new HeaderTitle('Write Procedure Title', 'writeTitle', [])];
-    }
-    clearDataTreeItems() {
-        this.data = [new HeaderTitle('Data Field Titles', 'dataTitle', []), this.data[1]];
-    }
-    clearWriteTreeItems() {
-        this.data = [this.data[0], new HeaderTitle('Write Procedure Title', 'writeTitle', [])];
+    clear(section) {
+        switch (section) {
+            case 0: {
+                this.data = [new HeaderTitle('Data Field Titles', 'dataTitle', []), new HeaderTitle('Write Procedure Title', 'writeTitle', [])];
+                break;
+            }
+            case 1: {
+                this.data = [new HeaderTitle('Data Field Titles', 'dataTitle', []), this.data[1]];
+                break;
+            }
+            case 2: {
+                this.data = [this.data[0], new HeaderTitle('Write Procedure Title', 'writeTitle', [])];
+                break;
+            }
+        }
     }
     //returns a list of all the items in the tree view, used by generate header code to include header titles in tree view as the titles to use for the
     //current instance
@@ -68,10 +74,11 @@ class HeaderTitleDataProvider {
     }
     //getWriteProcedureTitle gets the title to be used in the cobol code generation
     getWriteProcedureTitle() {
-        let writeItem = "";
-        if (this.data[1].children != undefined) {
-            writeItem = this.data[1].children[0].label;
-        }
+        var _a;
+        const writeItem = [];
+        (_a = this.data[1].children) === null || _a === void 0 ? void 0 : _a.forEach(item => {
+            writeItem.push(item.label);
+        });
         return writeItem;
     }
     //implementation method for TreeDataProvider
