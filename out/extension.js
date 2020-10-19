@@ -61,6 +61,68 @@ function activate(context) {
             myeditor.edit(editbuilder => editbuilder.insert(cursor, writeProcedure));
         }
     });
+    //so these define functions will only appear when the file they are activated on is a cobol file
+    //first they will pull the active text editor and storage variable is either the same filename or if the storage variable is empty
+    //this is to make sure that no matter which order the functions are calling in that they are only called on the same file, since
+    //data and write code should be on the same file.
+    //secondly when defining either location it should check the other location and make sure the user hasn't tried to place them in the same location
+    let defineEditor = undefined;
+    let dfPos;
+    let wpPos;
+    vscode.commands.registerCommand('extension.defineDataFieldLocation', function () {
+        const myeditor = vscode.window.activeTextEditor;
+        if (defineEditor === undefined) {
+            defineEditor = myeditor;
+        }
+        else if ((myeditor === null || myeditor === void 0 ? void 0 : myeditor.document.fileName) != defineEditor.document.fileName) {
+            vscode.window.showWarningMessage('Defined data fields location must be in the same file as define write procedure location!');
+            return;
+        }
+        if (wpPos != null) {
+            if (myeditor) {
+                const cursor = myeditor.selection.active;
+                if (wpPos.line === cursor.line) {
+                    vscode.window.showWarningMessage('You cannot define the same location as the write procedure location!');
+                    return;
+                }
+                else {
+                    dfPos = cursor;
+                }
+            }
+        }
+        else {
+            if (myeditor) {
+                const cursor = myeditor.selection.active;
+                dfPos = cursor;
+            }
+        }
+        console.log(myeditor === null || myeditor === void 0 ? void 0 : myeditor.document.fileName);
+        console.log('Data Field Location:' + dfPos.line);
+    });
+    vscode.commands.registerCommand('extension.defineWriteProcedureLocation', function () {
+        const myeditor = vscode.window.activeTextEditor;
+        if (defineEditor === undefined) {
+            defineEditor = myeditor;
+        }
+        else if ((myeditor === null || myeditor === void 0 ? void 0 : myeditor.document.fileName) != defineEditor.document.fileName) {
+            vscode.window.showWarningMessage('Defined write procedure location must be in the same file as defined data fields location!');
+            return;
+        }
+        if (dfPos != null) {
+            if (myeditor) {
+                const cursor = myeditor.selection.active;
+                if (dfPos.line === cursor.line) {
+                    vscode.window.showWarningMessage('You cannot define the same location as the data fields location!');
+                    return;
+                }
+                else {
+                    wpPos = cursor;
+                }
+            }
+        }
+        console.log(myeditor === null || myeditor === void 0 ? void 0 : myeditor.document.fileName);
+        console.log('Write Procedure Location:' + wpPos.line);
+    });
     const disposable = vscode.commands.registerCommand('extension.generateHeaderCode', function () {
         // Get the active text editor
         if (!ifEditor) {
@@ -69,6 +131,8 @@ function activate(context) {
         }
         //setting the editor to the referenced text editor
         const editor = theEditor;
+        // const editor = vscode.window.activeTextEditor;
+        // console.log('Filename of active editor:' + editor?.document.fileName);
         const treeViewList = provider.getTreeItemsList();
         const writeProcedureName = provider.getWriteProcedureTitle();
         //get all user specified settings
@@ -236,11 +300,11 @@ function activate(context) {
                 //activating Generate Headers calls this single function to do so
                 generateCode();
                 //shows the currently generated code in the console output for the user to review
-                preview.show();
-                preview.append("Header Data fields\n=================================");
+                preview.append("Header Data Fields\n=================================");
                 preview.append(dataFields);
-                preview.append("Header Write Procedure\n=============================");
+                preview.append("Header Write Procedure\n=================================");
                 preview.append(writeProcedure);
+                preview.show(true);
             });
         }
     });

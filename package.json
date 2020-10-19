@@ -13,6 +13,8 @@
     "activationEvents": [
         "onCommand:extension.generateHeaderCode",
         "onCommand:extension.createHeader",
+        "onCommand:extension.defineDataFieldLocation",
+        "onCommand:extension.defineWriteProcedureLocation",
         "onView:headerview"
     ],
     "main": "./out/extension",
@@ -107,6 +109,14 @@
             {
                 "command": "extension.placeWriteProcedure",
                 "title": "Place Header Write Procedure"
+            }, 
+            {
+                "command": "extension.defineDataFieldLocation",
+                "title": "Set Data Field Loction"
+            },
+            {
+                "command": "extension.defineWriteProcedureLocation",
+                "title": "Set Write Procedure Loction"
             }
         ],
         "views": {
@@ -119,6 +129,16 @@
             ]
         },
         "menus": {
+            "commandPalette": [
+                {
+                    "command": "extension.defineDataFieldLocation",
+                    "when": "editorLangId == cobol"
+                },
+                {
+                    "command": "extension.defineWriteProcedureLocation",
+                    "when": "editorLangId == cobol"
+                }
+            ],
             "view/title": [
                 {
                     "command": "extension.clearEntries",
