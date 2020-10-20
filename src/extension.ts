@@ -59,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
 	//this flag makes sure that the reference is only grabbed once
 	let ifEditor = false;
 
-	//maybe create a function to prevent code duplication
+	//maybe create a function to prevent code duplication, this code may be removed or changed later
 	vscode.commands.registerCommand('extension.placeDataFields', function () {
 		const myeditor = vscode.window.activeTextEditor;
 		if (myeditor) {
@@ -81,7 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
 	//this is to make sure that no matter which order the functions are calling in that they are only called on the same file, since
 	//data and write code should be on the same file.
 	//secondly when defining either location it should check the other location and make sure the user hasn't tried to place them in the same location
-
+	//TODO:This code can be reduced to a couple of functions
 	let defineEditor: vscode.TextEditor | undefined = undefined;
 	let dfPos: vscode.Position;
 	let wpPos: vscode.Position;
@@ -92,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
 			defineEditor = myeditor;
 		}
 		else if (myeditor?.document.fileName != defineEditor.document.fileName) {
-			vscode.window.showWarningMessage('Defined data fields location must be in the same file as define write procedure location!');
+			vscode.window.showWarningMessage('Defined data field location must be in the same file as define write procedure location!');
 			return;
 		}
 		if(wpPos != null) {
@@ -123,7 +123,7 @@ export function activate(context: vscode.ExtensionContext) {
 			defineEditor = myeditor;
 		}
 		else if (myeditor?.document.fileName != defineEditor.document.fileName) {
-			vscode.window.showWarningMessage('Defined write procedure location must be in the same file as defined data fields location!');
+			vscode.window.showWarningMessage('Defined write procedure location must be in the same file as data fields location!');
 			return;
 		}
 		if(dfPos != null) {
@@ -137,10 +137,22 @@ export function activate(context: vscode.ExtensionContext) {
 					wpPos = cursor;
 				}
 			}
-			
 		}
 		console.log(myeditor?.document.fileName);
 		console.log('Write Procedure Location:' + wpPos.line);
+	});
+
+	//using workspace edit we pass the file uri, insert positions, and text to the workspace apply edit function, this allows the user insert their
+	//header code at two defined locations
+	//TODO: this code needs more edge case testing 
+	vscode.commands.registerCommand('extension.insertCode', function () {
+		if (defineEditor) {
+			const cobolEdit = new vscode.WorkspaceEdit;
+			const editUri = vscode.Uri.file(defineEditor.document.fileName);
+			cobolEdit.insert(editUri, wpPos, writeProcedure);
+			cobolEdit.insert(editUri, dfPos, dataFields);
+			vscode.workspace.applyEdit(cobolEdit);
+		}
 	});
 
 	const disposable = vscode.commands.registerCommand('extension.generateHeaderCode', function () {

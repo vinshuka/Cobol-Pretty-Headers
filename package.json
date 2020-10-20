@@ -117,6 +117,10 @@
             {
                 "command": "extension.defineWriteProcedureLocation",
                 "title": "Set Write Procedure Loction"
+            },
+            {
+                "command": "extension.insertCode",
+                "title": "Insert Code"
             }
         ],
         "views": {
@@ -132,11 +136,11 @@
             "commandPalette": [
                 {
                     "command": "extension.defineDataFieldLocation",
-                    "when": "editorLangId == cobol"
+                    "when": "editorLangId == COBOL"
                 },
                 {
                     "command": "extension.defineWriteProcedureLocation",
-                    "when": "editorLangId == cobol"
+                    "when": "editorLangId == COBOL"
                 }
             ],
             "view/title": [
