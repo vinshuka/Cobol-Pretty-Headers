@@ -1,15 +1,20 @@
 {
     "name": "cobolprettyheaders",
     "displayName": "Cobol Pretty Headers",
-    "description": "Generate Pretty Headers for Cobol",
+    "description": "Allows user to create cobol report headers in plain text and generate the required cobol code to reproduce it.",
     "version": "0.0.1",
-    "publisher": "Melissa",
+    "publisher": "MelissaChristie",
     "engines": {
-        "vscode": "^1.32.0"
+        "vscode": "^1.52.1"
     },
     "categories": [
         "Other"
     ],
+    "icon": "images/icon.png",
+    "galleryBanner": {
+        "color": "#2b1669",
+        "theme": "dark"
+    },
     "activationEvents": [
         "onCommand:extension.generateHeaderCode",
         "onCommand:extension.createHeader",
@@ -185,10 +190,18 @@
     },
     "devDependencies": {
         "@types/node": "^12.12.62",
-        "@types/vscode": "^1.49.0",
+        "@types/vscode": "^1.52.1",
         "@typescript-eslint/eslint-plugin": "^3.10.1",
         "@typescript-eslint/parser": "^3.10.1",
         "eslint": "^7.10.0",
         "typescript": "^4.0.3"
-    }
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vinshuka/Cobol-Pretty-Headers"
+      },
+      "homepage": "https://github.com/vinshuka/Cobol-Pretty-Headers/blob/master/README.md",
+      "bugs": {
+          "email": "melissa.ann.christi@gmail.com"
+      }
 }
