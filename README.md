@@ -2,7 +2,23 @@
 
 A VS Code extension to generate code required for report headers in Cobol
 
-To create a header, first open up your cobol file and decide the location for the header data fields and the write procedure, best practice is to put a new line before and after the lines you want the data fields and the write procedure to start on. Then with the command pallet (ctrl-shift-p) use the command 'Create Header', this will open a new untitled file tab for you to design your header, this will also open the 'Header Title' view in the explorer that can be used to add or edit data field titles and the write procedure title. Type out your header the exact way you want it to appear in your report within the untitled tab. Once it looks the way you want it use the command pallet again to generate the cobol header code with the command 'Generate Header Code', a preview of the generated code will appear in the console output under 'Header Preview' which will appear automatically, note that if preview does not show you may have to swap terminal views to refresh the output console, once again when you are satisfied with the generated cobol, simply switch to your cobol file and place your cursor where you want your data fields and use the command 'Place Data Fields' from the command pallet, then do the same for the write procedure by using the command 'Place Write Procedure'. The inserted code will contain indentation to the correct cobol area, if you wish to do your own indentation simply disable indentation from the extension's settings.
+How To Use:
+
+1.
+Cobol Pretty Headers generates two pieces of cobol code for headers, the data fields and the write procedure. First indicate where you would like the code to go by placing your cursor on the chosen line and using the vscode command pallet (Ctrl-Shift-p) use command "Set Data Field Location". Repeat this process to set the write procedure location using the command "Set Write Procedure Location" (Note there is a manual placement command if you do not want to predefine locations for the code that will be explained in a later step, skip this step if you want to use the manual option).
+
+2.
+Use the command pallet and use command "Create Header", a new untitled text tab will open. Here you can type your header exactly how you would like it to appear. Using this command will also cause a new tree view called "Header Titles" to appear in the explorer view. Header Titles can be used to define custom names for the data fields and write procedure of the header. Simply right click on either "Data Field Titles" or "Write Procedure Title" and select Add. You can also edit added titles by right clicking the title and selecting edit. You can delete them in the same manner as well. "Data Field Titles" or "Write Procedure Title" also each have a "clear" option in case you would like to remove the custom titles in that section. There is also a "clear all" option under the meatball menu for the Header Titles tree view.
+
+3.
+Once you have typed out your header use the command pallet to call the command "Generate Header Code". This will create the cobol code and display a preview of that code in the vscode output window. If you want to change the header simply make the changes and then call the "Generate Header Code" again.
+
+4.
+If you chose to predefine the locations for the header code all you need to do to all it to your cobol file is use the command pallet to call the command "Insert Code". The generated code will automatically be pasted in the locations you defined. If you chose not to predefine the locations you can insert the code manually, simply place your cursor where you would like the data fields code to go and use the command pallet to call command "Place Header Data Fields". You can do the same with the write procedure code by calling the command "Place Header Write Procedure"
+
+## Header Titles View
+
+A Tree view is included to allow the user to quickly add header data field titles and the write procedure title without having to define them in the settings, used if the user wants to just change the titles short term. Titles can be added by right clicking the group title and selecting add, note that only one write procedure title can be in the list at a time. There is also a clear option if the user wants to clear the entries in the group. Individual titles can be edited or deleted by right-clicking on the title item. The whole list can be cleared by clicking the treeview's meatball menu and selecting 'clear all'. 
 
 ## User Defined Settings
 
@@ -71,8 +87,5 @@ The user can also set a default name for the write procedure.
 
 There is an option to include indentation in the code generation, this will indent the cobol to the correct area allowing the user to simply place it in their cobol file without needing to edit the code afterwards. This option is checked by default but can be unchecked if the user wishes to add their own indentation.
 
-## Header Title and Write Procedure add/edit/delete view
-
-A Tree view is included to allow the user to quickly add header data field titles and the write procedure title without having to define them in the settings, used if the user wants to just change the titles short term. Titles can be added by right clicking the group title and selecting add, note that only one write procedure title can be in the list at a time. There is also a clear option if the user wants to clear the entries in the group. Individual titles can be edited or deleted by right-clicking on the title item. The whole list can be cleared by clicking the treeview's meatball menu and selecting 'clear all'. 
 
 

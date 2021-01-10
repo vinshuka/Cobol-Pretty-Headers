@@ -88,6 +88,7 @@ function activate(context) {
                 }
                 else {
                     dfPos = cursor;
+                    vscode.window.showInformationMessage('Data field location set.');
                 }
             }
         }
@@ -95,10 +96,9 @@ function activate(context) {
             if (myeditor) {
                 const cursor = myeditor.selection.active;
                 dfPos = cursor;
+                vscode.window.showInformationMessage('Data field location set.');
             }
         }
-        console.log(myeditor === null || myeditor === void 0 ? void 0 : myeditor.document.fileName);
-        console.log('Data Field Location:' + dfPos.line);
     });
     vscode.commands.registerCommand('extension.defineWriteProcedureLocation', function () {
         const myeditor = vscode.window.activeTextEditor;
@@ -118,11 +118,17 @@ function activate(context) {
                 }
                 else {
                     wpPos = cursor;
+                    vscode.window.showInformationMessage('Write procedure location set.');
                 }
             }
         }
-        console.log(myeditor === null || myeditor === void 0 ? void 0 : myeditor.document.fileName);
-        console.log('Write Procedure Location:' + wpPos.line);
+        else {
+            if (myeditor) {
+                const cursor = myeditor.selection.active;
+                wpPos = cursor;
+                vscode.window.showInformationMessage('Write procedure location set.');
+            }
+        }
     });
     //using workspace edit we pass the file uri, insert positions, and text to the workspace apply edit function, this allows the user insert their
     //header code at two defined locations
@@ -134,9 +140,12 @@ function activate(context) {
             cobolEdit.insert(editUri, wpPos, writeProcedure);
             cobolEdit.insert(editUri, dfPos, dataFields);
             vscode.workspace.applyEdit(cobolEdit);
+            vscode.window.showInformationMessage('Header code inserted in ' + defineEditor.document.fileName);
         }
     });
+    vscode.commands.executeCommand('setContext', 'ext:codeGenerated', false);
     const disposable = vscode.commands.registerCommand('extension.generateHeaderCode', function () {
+        vscode.commands.executeCommand('setContext', 'ext:codeGenerated', true);
         // Get the active text editor
         if (!ifEditor) {
             theEditor = vscode.window.activeTextEditor;
@@ -272,10 +281,10 @@ function activate(context) {
                 //advances are needed for each line of the header
                 function generateWriter(headerData) {
                     if (indentation) {
-                        writeProcedure += '\n       ' + writeProcedureName[0].toUpperCase();
+                        writeProcedure += '\n       ' + writeProcedureName[0].toUpperCase() + '.';
                     }
                     else {
-                        writeProcedure += '\n' + writeProcedureName[0].toUpperCase();
+                        writeProcedure += '\n' + writeProcedureName[0].toUpperCase() + '.';
                     }
                     for (let i = 0; i < headerData.length; i++) {
                         if (i === 0) {
@@ -313,9 +322,9 @@ function activate(context) {
                 //activating Generate Headers calls this single function to do so
                 generateCode();
                 //shows the currently generated code in the console output for the user to review
-                preview.append("Header Data Fields\n=================================");
+                preview.append("Header Data Fields\n=================================\n");
                 preview.append(dataFields);
-                preview.append("Header Write Procedure\n=================================");
+                preview.append("Header Write Procedure\n=================================\n");
                 preview.append(writeProcedure);
                 preview.show(true);
             });

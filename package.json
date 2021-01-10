@@ -112,11 +112,11 @@
             }, 
             {
                 "command": "extension.defineDataFieldLocation",
-                "title": "Set Data Field Loction"
+                "title": "Set Data Field Location"
             },
             {
                 "command": "extension.defineWriteProcedureLocation",
-                "title": "Set Write Procedure Loction"
+                "title": "Set Write Procedure Location"
             },
             {
                 "command": "extension.insertCode",
@@ -136,11 +136,11 @@
             "commandPalette": [
                 {
                     "command": "extension.defineDataFieldLocation",
-                    "when": "editorLangId == COBOL"
+                    "when": "editorLangId == COBOL || ext:codeGenerated"
                 },
                 {
                     "command": "extension.defineWriteProcedureLocation",
-                    "when": "editorLangId == COBOL"
+                    "when": "editorLangId == COBOL || ext:codeGenerated"
                 }
             ],
             "view/title": [
