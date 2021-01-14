@@ -2,7 +2,7 @@
     "name": "cobolprettyheaders",
     "displayName": "Cobol Pretty Headers",
     "description": "Allows user to create cobol report headers in plain text and generate the required cobol code to reproduce it.",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "publisher": "MelissaChristie",
     "engines": {
         "vscode": "^1.52.1"
@@ -140,12 +140,10 @@
         "menus": {
             "commandPalette": [
                 {
-                    "command": "extension.defineDataFieldLocation",
-                    "when": "editorLangId == COBOL || ext:codeGenerated"
+                    "command": "extension.defineDataFieldLocation"
                 },
                 {
-                    "command": "extension.defineWriteProcedureLocation",
-                    "when": "editorLangId == COBOL || ext:codeGenerated"
+                    "command": "extension.defineWriteProcedureLocation"
                 }
             ],
             "view/title": [
