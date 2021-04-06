@@ -4,6 +4,7 @@
     "description": "Allows user to create cobol report headers in plain text and generate the required cobol code to reproduce it.",
     "version": "1.0.0",
     "publisher": "MelissaChristie",
+    "license": "MIT",
     "engines": {
         "vscode": "^1.52.1"
     },
