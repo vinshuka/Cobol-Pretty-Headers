@@ -2,7 +2,7 @@
     "name": "cobolprettyheaders",
     "displayName": "Cobol Pretty Headers",
     "description": "Allows user to create cobol report headers in plain text and generate the required cobol code to reproduce it.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "publisher": "MelissaChristie",
     "license": "MIT",
     "engines": {
@@ -45,7 +45,7 @@
                         "description": "Check to change header data fields to condensed, condensed data fields will store each full line of the header in a single data field instead of separate ones for each word and space."
                     },
                     "cobolprettyheaders.includeIndentation": {
-                        "type":"boolean",
+                        "type": "boolean",
                         "default": true,
                         "description": "Generated code will include indentation, uncheck if you wish to use a different indentation style."
                     },
@@ -111,11 +111,11 @@
             {
                 "command": "extension.placeDataFields",
                 "title": "Place Header Data Fields"
-            }, 
+            },
             {
                 "command": "extension.placeWriteProcedure",
                 "title": "Place Header Write Procedure"
-            }, 
+            },
             {
                 "command": "extension.defineDataFieldLocation",
                 "title": "Set Data Field Location"
@@ -164,11 +164,11 @@
                 },
                 {
                     "command": "extension.addDataEntry",
-                    "when": "view == headerview && viewItem == dataTitle" 
+                    "when": "view == headerview && viewItem == dataTitle"
                 },
                 {
                     "command": "extension.addWriteEntry",
-                    "when": "view == headerview && viewItem == writeTitle" 
+                    "when": "view == headerview && viewItem == writeTitle"
                 },
                 {
                     "command": "extension.clearDataEntries",
@@ -198,9 +198,9 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/vinshuka/Cobol-Pretty-Headers"
-      },
-      "homepage": "https://github.com/vinshuka/Cobol-Pretty-Headers/blob/master/README.md",
-      "bugs": {
-          "email": "melissa.ann.christi@gmail.com"
-      }
+    },
+    "homepage": "https://github.com/vinshuka/Cobol-Pretty-Headers/blob/master/README.md",
+    "bugs": {
+        "email": "melissa.ann.christi@gmail.com"
+    }
 }
