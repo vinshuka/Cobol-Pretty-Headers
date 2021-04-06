@@ -1,3 +1,6 @@
+//Copyright (C) 2021 Melissa Christie - All Rights Reserved
+//You may use, distribute, and modifiy this code under the 
+//terms of the MIT License.
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = void 0;

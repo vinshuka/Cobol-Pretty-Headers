@@ -1,4 +1,7 @@
 "use strict";
+//Copyright (C) 2021 Melissa Christie - All Rights Reserved
+//You may use, distribute, and modifiy this code under the 
+//terms of the MIT License.
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HeaderTitle = exports.HeaderTitleDataProvider = void 0;
 const vscode = require("vscode");
