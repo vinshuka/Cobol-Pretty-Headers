@@ -1,9 +1,12 @@
+//Copyright (C) 2021 Melissa Christie - All Rights Reserved
+//You may use, distribute, and modifiy this code under the 
+//terms of the MIT License.
+
 'use strict';
 
 import * as vscode from 'vscode';
 import { HeaderTitleDataProvider, HeaderTitle } from './headerTitles';
 
-//TODO: split out fuctionality to separate files so that this file only has activate function and command functions
 
 //defining the HeaderRecord type
 type HeaderRecord = {
